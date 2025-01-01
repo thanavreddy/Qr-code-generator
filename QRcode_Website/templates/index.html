@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="static/styles.css"><link/>
+</head>
+<body>
+    <header>
+        <h1>QR Code Generator</h1>
+    </header>
+    <main>
+        <section id="generator">
+            <h2>Generate QR Code</h2>
+            <form action="/generate" method="post">
+                <label for="data">Data to encode:</label>
+                <input type="text" id="data" name="data" required>
+                <label for="size">Size:</label>
+                <input type="number" id="size" name="size" min="0" max="500" value="10" required>
+                <label for="fill_color">fill Color:</label>
+                <input type="color" id="fill_color" name="fill_color" value="#000000">
+                <label for="back_color">back Color:</label>
+                <input type="color" id="back_color" name="back_color" value="#000000">
+                <label for="format">Format:</label>
+                <select id="format" name="format">
+                    <option value="png">PNG</option>
+                    <option value="svg">SVG</option>
+                </select>
+                <button>
+                    <span class="span-mother">
+                      <span>g</span>
+                      <span>e</span>
+                      <span>n</span>
+                      <span>e</span>
+                      <span>r</span>
+                      <span>a</span>
+                      <span>t</span>
+                      <span>e</span>
+                    </span>
+                    <span class="span-mother2">
+                      <span>g</span>
+                      <span>e</span>
+                      <span>n</span>
+                      <span>e</span>
+                      <span>r</span>
+                      <span>a</span>
+                      <span>t</span>
+                      <span>e</span>
+                    </span>
+                  </button>
+                  
+                <!-- <button type="submit">Generate QR Code</button> -->
+            </form>
+            <body>
+                <div class="qr-container">
+                    <h1>QR Code Details</h1>
+                   {% for qr_code in qr_codes %}
+                        <div class="qr-code">
+                            <img src="data:image/png;base64,{{ qr_code[5] }}" alt="QR Code">
+                            <p class="qr-data">Data: {{ qr_code[1] }}</p>
+                    {% endfor %}
+            </body>
+            <!-- Generated QR code will be displayed here -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 QR Code Generator. All rights reserved.</p>
+    </footer>
+    <script>
+        // Handle form submission and display generated QR code
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            fetch('/generate', {
+                method: 'POST',
+                body: new FormData(this)
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                document.getElementById('qr-code').innerHTML = `<img src="${url}" alt="Generated QR Code">`;
+            });
+        });
+    </script>
+</body>
+</html>
